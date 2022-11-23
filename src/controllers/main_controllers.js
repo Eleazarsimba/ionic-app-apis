@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 
-const crypto = require("crypto");
+// const crypto = require("crypto");
 
 // Create a connection to the database
 const connection = mysql.createConnection({
@@ -22,7 +22,7 @@ connection.connect(function(error){
 exports.makeSale = (req, res, next) => {
   // const id = crypto.randomBytes(4).toString("hex");
   // const uniqNo = (`#TS`+id);
-  const datecreated = new Date().toLocaleDateString();
+  // const datecreated = new Date().toLocaleDateString();
 
   var date = new Date();
   // Get year, month, and day part from the date
@@ -103,7 +103,7 @@ exports.allProducts = (req, res, next) => {
 exports.receipts = (req, res, next) => {
   try {
     // let sql = "SELECT dateCreated, group_concat(receiptNo) as `GROUP_RECEIPTS` FROM saleinfo GROUP BY dateCreated ORDER BY dateCreated DESC";
-    let sql = "SELECT * FROM saleinfo ORDER BY dateCreated DESC, time DESC";
+    let sql = "SELECT * FROM saleinfo ORDER BY dateCreated DESC, time DESC LIMIT 25";
     connection.query(sql, function(err, data, fields) {
       if (err) {
         res.status(500).send({ message: err.message });
