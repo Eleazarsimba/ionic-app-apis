@@ -1,4 +1,6 @@
 const mysql = require('mysql');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // const crypto = require("crypto");
 
@@ -52,6 +54,75 @@ exports.makeSale = (req, res, next) => {
         } 
           
       });
+};
+
+//register new user
+exports.regUser = (req, res, next) => {  
+  const {
+    email,
+    username,
+    password
+  } = req.body;   
+
+  const salt = bcrypt.genSaltSync(10);
+
+   // data for all users table
+   var alldata={
+    email: email,
+    username: username,
+    password: bcrypt.hashSync(password, salt)
+};
+    // insert user
+    //  check if user already exist
+    connection.query('SELECT * FROM users WHERE email = ? ',  [email]
+    ,function(err,rows){
+    // if error in getting th list
+    if(err) {
+      return res.send("Error in getting "+email);
+    }
+    // if no user exist
+    if (!rows.length)
+    {
+      // insert user
+             connection.query('INSERT INTO users SET ?',alldata,function(err, results){
+              res.send('User recorded');
+        });
+    }
+    else
+    {
+        return res.send(email+" is already registered");
+    }
+    });
+};
+
+//login user
+exports.loginUser = (req, res, next) => {  
+  var email = req.body.email;
+  var sql = "SELECT * FROM users WHERE email= ?"
+  var filter = [email, true];
+  connection.query(sql, filter, function(error,rows, fields){
+          if(error) {
+            return res.send("Error in signing the user");
+          }
+          else { 
+            if(rows.length > 0) { 
+            bcrypt.compare(req.body.password, rows[0].password, function(error, result) {
+              if(result) {
+                const token = jwt.sign({email: email}, "supersecret", {expiresIn: 60 * 60 * 24});  //expires in 24 hour
+                return res.send({
+                  user: rows[0],
+                  token: token, 
+                  message: "Login Successful" });
+              }
+              else {
+                return res.status(400).send({ error: "Invalid details" });
+              }
+            });
+        } else {
+            return res.status(400).send({ error: "Email does not exist or account not activated" });
+        } 
+        }
+    });
 };
 
 //register new user

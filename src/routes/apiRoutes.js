@@ -6,8 +6,13 @@ const {
     allProducts,
     registerall,
     receipts,
-    eachreceipt
+    eachreceipt,
+    loginUser,
+    regUser
 } = require('../controllers/main_controllers');
+
+router.post('/login', loginUser);
+router.post('/register', regUser);
 
 router.post('/new_sale', makeSale);
 router.post('/register_all', registerall);
