@@ -6,10 +6,10 @@ const jwt = require('jsonwebtoken');
 
 // Create a connection to the database
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'ionicshop'
+  host: 'sql8.freesqldatabase.com',
+  user: 'sql8582637',
+  password: 'icspcgxIYe',
+  database: 'sql8582637'
 });
 
 // open the MySQL connection
